@@ -11,28 +11,30 @@
   width: 100%;
   max-width: 620px;
   background: var(--c-bg);
-  border: 0.5px solid var(--c-border);
-  border-radius: var(--radius-lg);
+  border: 1px solid var(--c-border);
+  border-radius: 20px;
   overflow: hidden;
+  box-shadow: 0 4px 32px rgba(99,102,241,0.10), 0 1px 4px rgba(0,0,0,0.06);
 }
 
 .cardHeader {
   padding: 1.75rem 2rem 1.25rem;
-  border-bottom: 0.5px solid var(--c-border);
+  border-bottom: 1px solid var(--c-border);
+  background: linear-gradient(135deg, rgba(99,102,241,0.04), rgba(139,92,246,0.04));
 }
 
 .brand {
   font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
+  font-weight: 700;
+  letter-spacing: 0.10em;
   text-transform: uppercase;
-  color: var(--c-text-3);
+  color: var(--c-accent);
   margin-bottom: 0.5rem;
 }
 
 .sectionTitle {
-  font-size: 18px;
-  font-weight: 600;
+  font-size: 20px;
+  font-weight: 700;
   color: var(--c-text);
   margin-bottom: 4px;
 }
