@@ -1,0 +1,76 @@
+.zone {
+  border: 0.5px dashed var(--c-border-2);
+  border-radius: var(--radius-md);
+  padding: 2rem;
+  text-align: center;
+  cursor: pointer;
+  background: var(--c-bg-2);
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.zone:hover, .zone.dragging {
+  border-color: var(--c-accent);
+  background: var(--c-bg-3);
+}
+
+.icon {
+  font-size: 22px;
+  color: var(--c-text-3);
+  margin-bottom: 8px;
+}
+
+.text {
+  font-size: 14px;
+  color: var(--c-text-2);
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.hint {
+  font-size: 12px;
+  color: var(--c-text-3);
+}
+
+.list {
+  list-style: none;
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border: 0.5px solid var(--c-border);
+  border-radius: var(--radius-md);
+  font-size: 13px;
+}
+
+.fileName {
+  flex: 1;
+  color: var(--c-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fileSize {
+  color: var(--c-text-3);
+  font-size: 12px;
+}
+
+.remove {
+  font-size: 18px;
+  color: var(--c-text-3);
+  line-height: 1;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0 2px;
+  transition: color 0.15s;
+}
+
+.remove:hover { color: var(--c-danger); }

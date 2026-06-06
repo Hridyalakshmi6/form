@@ -1,0 +1,17 @@
+.field {
+  margin-bottom: 1.25rem;
+}
+
+.label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--c-text-2);
+  margin-bottom: 6px;
+}
+
+.error {
+  margin-top: 5px;
+  font-size: 12px;
+  color: var(--c-danger);
+}

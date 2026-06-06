@@ -1,0 +1,55 @@
+.input, .textarea, .select {
+  width: 100%;
+  padding: 9px 12px;
+  border: 0.5px solid var(--c-border-2);
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  font-family: var(--font-sans);
+  color: var(--c-text);
+  background: var(--c-bg);
+  outline: none;
+  transition: border-color 0.15s;
+  appearance: none;
+}
+
+.input:focus, .textarea:focus, .select:focus {
+  border-color: var(--c-accent);
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 90px;
+  line-height: 1.6;
+}
+
+.row2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.chipRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 6px;
+}
+
+.chip {
+  padding: 6px 14px;
+  border: 0.5px solid var(--c-border-2);
+  border-radius: var(--radius-pill);
+  font-size: 13px;
+  color: var(--c-text-2);
+  cursor: pointer;
+  background: var(--c-bg);
+  transition: all 0.15s;
+  user-select: none;
+}
+
+.chip:hover { border-color: var(--c-accent); color: var(--c-text); }
+.chip.sel { border-color: var(--c-accent); color: var(--c-text); background: var(--c-bg-3); font-weight: 500; }
+
+@media (max-width: 480px) {
+  .row2 { grid-template-columns: 1fr; }
+}
