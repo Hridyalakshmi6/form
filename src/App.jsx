@@ -3,47 +3,71 @@ import ProgressBar from './components/ProgressBar'
 import NavRow from './components/NavRow'
 import SuccessScreen from './components/SuccessScreen'
 
-import PersonalInfo from './sections/PersonalInfo'
-import ProductRating from './sections/ProductRating'
-import Satisfaction from './sections/Satisfaction'
-import Comments from './sections/Comments'
-import IssueReporting from './sections/IssueReporting'
-import NPS from './sections/NPS'
-import Attachments from './sections/Attachments'
-import FollowUpConsent from './sections/FollowUpConsent'
+import Demographics from './sections/Demographics'
+import SupplementUse from './sections/SupplementUse'
+import SupplementDetails from './sections/SupplementDetails'
+import OtcMedication from './sections/OtcMedication'
+import Awareness from './sections/Awareness'
+import SideEffects from './sections/SideEffects'
 
 import styles from './App.module.css'
 
 const SECTIONS = [
-  { id: 'personal',     title: 'Personal info',              sub: 'Tell us a little about yourself.' },
-  { id: 'product',      title: 'Product & service rating',   sub: 'Rate your experience with each area.' },
-  { id: 'satisfaction', title: 'Overall satisfaction',       sub: 'How did we do overall?' },
-  { id: 'comments',     title: 'Comments & suggestions',     sub: 'Share any thoughts or ideas.' },
-  { id: 'issue',        title: 'Issue reporting',            sub: 'Let us know if something went wrong.' },
-  { id: 'nps',          title: 'Would you recommend us?',    sub: 'Net Promoter Score — 0 is not at all, 10 is definitely.' },
-  { id: 'attachments',  title: 'Attachments',                sub: 'Upload screenshots or supporting files (optional).' },
-  { id: 'consent',      title: 'Follow-up consent',          sub: 'Choose how we can follow up with you.' },
+  { id: 'demographics',      title: 'Demographics',              sub: 'Section A - Basic participant details.' },
+  { id: 'supplementUse',      title: 'Supplement Use',            sub: 'Section B - Gym supplement choices.' },
+  { id: 'supplementDetails',  title: 'Supplement Intake Details', sub: 'Section B - Frequency and duration of supplements.' },
+  { id: 'otcMedication',      title: 'OTC Medication Use',        sub: 'Section C - Common over-the-counter medications used.' },
+  { id: 'awareness',          title: 'Awareness & Assessment',    sub: 'Section D - Usage combinations and interaction awareness.' },
+  { id: 'sideEffects',        title: 'Side Effects & Habits',     sub: 'Section E - Side effects and lifestyle habits.' },
 ]
 
 const defaultData = {
-  name: '', email: '', phone: '',
-  r_product: 0, r_support: 0, r_delivery: 0, r_value: 0,
-  satisfaction: '',
-  comments: '', suggestions: '',
-  hasIssue: false, issueType: [], issueDesc: '',
-  nps: null,
-  files: [],
-  followUp: true, marketingEmails: false, smsUpdates: false,
+  age: '',
+  gender: '',
+  gymExperience: '',
+  gymAim: [],
+  gymDaysPerWeek: '',
+  gymHoursPerWorkout: '',
+  gymConsistency: '',
+  takesSupplements: '',
+  selectedSupplements: [],
+  supplementDetails: {}, // { [suppName]: { timesPerDay: '', daysPerWeek: '', duration: '' } }
+  otcMedications: {}, // { [medName]: 'Yes' | 'No' }
+  readLabels: '',
+  concurrentMedicines: [],
+  otherConcurrentMedicines: '',
+  combinedSupplements: [],
+  knowCaffeineLimit: '',
+  awareOfInteractions: '',
+  recommendedBy: [],
+  sideEffects: [],
+  otherSideEffects: '',
+  lifestyleHabits: [],
 }
 
 function validate(sectionId, data) {
   const errs = {}
-  if (sectionId === 'personal') {
-    if (!data.name.trim()) errs.name = 'Name is required.'
-    if (!data.email.trim() || !/\S+@\S+\.\S+/.test(data.email)) errs.email = 'A valid email is required.'
+  if (sectionId === 'demographics') {
+    if (!data.age || isNaN(data.age) || parseInt(data.age) <= 0) errs.age = 'A valid age is required.'
+    if (!data.gender) errs.gender = 'Gender selection is required.'
+    if (!data.gymExperience) errs.gymExperience = 'Gym experience duration is required.'
+    if (!data.gymAim || data.gymAim.length === 0) errs.gymAim = 'Please select at least one goal.'
+    if (!data.gymDaysPerWeek) errs.gymDaysPerWeek = 'Workout frequency is required.'
+    if (!data.gymHoursPerWorkout) errs.gymHoursPerWorkout = 'Workout hours are required.'
+    if (!data.gymConsistency) errs.gymConsistency = 'Consistency selection is required.'
   }
-  if (sectionId === 'satisfaction' && !data.satisfaction) errs.satisfaction = 'Please select an option.'
-  if (sectionId === 'nps' && data.nps === null) errs.nps = 'Please select a score.'
+  if (sectionId === 'supplementUse') {
+    if (!data.takesSupplements) {
+      errs.takesSupplements = 'Please select an option.'
+    } else if ((data.takesSupplements === 'Yes' || data.takesSupplements === 'Occasionally') && (!data.selectedSupplements || data.selectedSupplements.length === 0)) {
+      errs.selectedSupplements = 'Please select at least one supplement.'
+    }
+  }
+  if (sectionId === 'awareness') {
+    if (!data.readLabels) errs.readLabels = 'Label reading selection is required.'
+    if (!data.knowCaffeineLimit) errs.knowCaffeineLimit = 'Please answer this question.'
+    if (!data.awareOfInteractions) errs.awareOfInteractions = 'Please answer this question.'
+  }
   return errs
 }
 
@@ -60,6 +84,11 @@ export default function App() {
 
   const update = (patch) => setData(prev => ({ ...prev, ...patch }))
 
+  // Skip SupplementDetails step if they do not take supplements
+  const shouldSkipDetails = (takes, selected) => {
+    return takes === 'No' || !selected || selected.length === 0
+  }
+
   const handleNext = async () => {
     const errs = validate(section.id, data)
     if (Object.keys(errs).length) { setErrors(errs); return }
@@ -70,20 +99,37 @@ export default function App() {
       setSubmitError('')
       try {
         const payload = {
-          name: data.name, email: data.email, phone: data.phone,
-          rating_product: data.r_product, rating_support: data.r_support,
-          rating_delivery: data.r_delivery, rating_value: data.r_value,
-          satisfaction: data.satisfaction,
-          comments: data.comments, suggestions: data.suggestions,
-          has_issue: data.hasIssue ? 'Yes' : 'No',
-          issue_types: data.issueType.join(', '),
-          issue_description: data.issueDesc,
-          nps_score: data.nps,
-          files_attached: data.files.map(f => f.name).join(', '),
-          allow_followup: data.followUp,
-          marketing_emails: data.marketingEmails,
-          sms_updates: data.smsUpdates,
+          age: data.age,
+          gender: data.gender,
+          gym_experience: data.gymExperience,
+          gym_aim: (data.gymAim || []).join(', '),
+          gym_days_per_week: data.gymDaysPerWeek,
+          gym_hours_per_workout: data.gymHoursPerWorkout,
+          gym_consistency: data.gymConsistency,
+          takes_supplements: data.takesSupplements,
+          selected_supplements: (data.selectedSupplements || []).join(', '),
+          supplement_details: (data.selectedSupplements || []).map(supp => {
+            const d = (data.supplementDetails || {})[supp] || {}
+            return `${supp} (${d.timesPerDay || '?'} times/day, ${d.daysPerWeek || '?'} days/week, ${d.duration || '?'})`
+          }).join(' | '),
+          otc_medications_used: Object.keys(data.otcMedications || {}).filter(k => (data.otcMedications || {})[k] === 'Yes').join(', '),
+          otc_details: Object.keys(data.otcMedications || {}).map(k => `${k}: ${(data.otcMedications || {})[k]}`).join(', '),
+          read_labels: data.readLabels,
+          concurrent_medicines: [
+            ...(data.concurrentMedicines || []),
+            ...(data.otherConcurrentMedicines ? [data.otherConcurrentMedicines] : [])
+          ].join(', '),
+          combined_supplements: (data.combinedSupplements || []).join(', '),
+          know_caffeine_limit: data.knowCaffeineLimit,
+          aware_of_interactions: data.awareOfInteractions,
+          recommended_by: (data.recommendedBy || []).join(', '),
+          side_effects: [
+            ...(data.sideEffects || []).filter(x => x !== 'Others'),
+            ...(data.otherSideEffects ? [`Others (${data.otherSideEffects})`] : [])
+          ].join(', '),
+          lifestyle_habits: (data.lifestyleHabits || []).join(', ')
         }
+
         const res = await fetch('/api/submit', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -99,20 +145,40 @@ export default function App() {
       return
     }
 
+    // Dynamic Step Skipping
+    if (section.id === 'supplementUse') {
+      if (shouldSkipDetails(data.takesSupplements, data.selectedSupplements)) {
+        setStep(step + 2) // Skip SupplementDetails (2) -> go to OtcMedication (3)
+        return
+      }
+    }
+
     setStep(s => s + 1)
   }
 
-  const handleBack = () => { setErrors({}); setStep(s => s - 1) }
+  const handleBack = () => {
+    setErrors({})
+    
+    // Dynamic Step Skipping backwards
+    if (section.id === 'otcMedication') {
+      if (shouldSkipDetails(data.takesSupplements, data.selectedSupplements)) {
+        setStep(step - 2) // Go back to SupplementUse (1)
+        return
+      }
+    }
 
-  if (submitted) return <SuccessScreen name={data.name} />
+    setStep(s => s - 1)
+  }
+
+  if (submitted) return <SuccessScreen name="Fitness Participant" />
 
   const sectionProps = { data, update, errors }
 
   return (
     <div className={styles.page}>
-      <div className={styles.card}>
+      <div className={styles.card} style={{ maxWidth: '720px' /* expanded for side-by-side matrices */ }}>
         <div className={styles.cardHeader}>
-          <p className={styles.brand}>Feedback</p>
+          <p className={styles.brand}>Pharmacotherapeutics-I Minor Project</p>
           <h1 className={styles.sectionTitle}>{section.title}</h1>
           <p className={styles.sectionSub}>{section.sub}</p>
         </div>
@@ -120,14 +186,12 @@ export default function App() {
         <ProgressBar total={SECTIONS.length} current={step} sections={SECTIONS} />
 
         <div className={styles.body}>
-          {section.id === 'personal'     && <PersonalInfo    {...sectionProps} />}
-          {section.id === 'product'      && <ProductRating   {...sectionProps} />}
-          {section.id === 'satisfaction' && <Satisfaction    {...sectionProps} />}
-          {section.id === 'comments'     && <Comments        {...sectionProps} />}
-          {section.id === 'issue'        && <IssueReporting  {...sectionProps} />}
-          {section.id === 'nps'          && <NPS             {...sectionProps} />}
-          {section.id === 'attachments'  && <Attachments     {...sectionProps} />}
-          {section.id === 'consent'      && <FollowUpConsent {...sectionProps} />}
+          {section.id === 'demographics'      && <Demographics      {...sectionProps} />}
+          {section.id === 'supplementUse'      && <SupplementUse      {...sectionProps} />}
+          {section.id === 'supplementDetails'  && <SupplementDetails  {...sectionProps} />}
+          {section.id === 'otcMedication'      && <OtcMedication      {...sectionProps} />}
+          {section.id === 'awareness'          && <Awareness          {...sectionProps} />}
+          {section.id === 'sideEffects'        && <SideEffects        {...sectionProps} />}
 
           {submitError && <p className={styles.submitError}>{submitError}</p>}
         </div>
