@@ -19,24 +19,26 @@ export default async function handler(req, res) {
     const body = req.body
     const row = [
       new Date().toISOString(),
-      body.name,
-      body.email,
-      body.phone || '',
-      body.rating_product,
-      body.rating_support,
-      body.rating_delivery,
-      body.rating_value,
-      body.satisfaction,
-      body.comments || '',
-      body.suggestions || '',
-      body.has_issue,
-      body.issue_types || '',
-      body.issue_description || '',
-      body.nps_score,
-      body.files_attached || '',
-      body.allow_followup ? 'Yes' : 'No',
-      body.marketing_emails ? 'Yes' : 'No',
-      body.sms_updates ? 'Yes' : 'No'
+      body.age || '',
+      body.gender || '',
+      body.gym_experience || '',
+      body.gym_aim || '',
+      body.gym_days_per_week || '',
+      body.gym_hours_per_workout || '',
+      body.gym_consistency || '',
+      body.takes_supplements || '',
+      body.selected_supplements || '',
+      body.supplement_details || '',
+      body.otc_medications_used || '',
+      body.otc_details || '',
+      body.read_labels || '',
+      body.concurrent_medicines || '',
+      body.combined_supplements || '',
+      body.know_caffeine_limit || '',
+      body.aware_of_interactions || '',
+      body.recommended_by || '',
+      body.side_effects || '',
+      body.lifestyle_habits || ''
     ]
 
     // Check if header row exists; add it if sheet is empty
@@ -47,12 +49,27 @@ export default async function handler(req, res) {
 
     if (!existing.data.values || existing.data.values.length === 0) {
       const headers = [
-        'Timestamp', 'Name', 'Email', 'Phone',
-        'Rating: Product', 'Rating: Support', 'Rating: Delivery', 'Rating: Value',
-        'Satisfaction', 'Comments', 'Suggestions',
-        'Had Issue?', 'Issue Types', 'Issue Description',
-        'NPS Score', 'Files Attached',
-        'Allow Follow-Up', 'Marketing Emails', 'SMS Updates'
+        'Timestamp',
+        'Age',
+        'Gender',
+        'Gym Experience',
+        'Gym Aim',
+        'Days per Week',
+        'Workout Hours',
+        'Consistency',
+        'Takes Supplements?',
+        'Selected Supplements',
+        'Supplement Details',
+        'OTC Medications Used',
+        'OTC Full Details',
+        'Reads Medication Labels?',
+        'Concurrent Medicines',
+        'Combined Supplements',
+        'Knows Caffeine Limit?',
+        'Aware of Interactions?',
+        'Recommended By',
+        'Side Effects',
+        'Lifestyle Habits'
       ]
       await sheets.spreadsheets.values.append({
         spreadsheetId,

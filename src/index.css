@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -5,42 +7,54 @@
 }
 
 :root {
-  --font-sans: 'DM Sans', system-ui, sans-serif;
-  --font-mono: 'DM Mono', monospace;
+  --font-sans: 'Plus Jakarta Sans', 'Outfit', system-ui, -apple-system, sans-serif;
+  --font-mono: SFMono-Regular, Consolas, monospace;
+  
   --radius-sm: 8px;
-  --radius-md: 10px;
-  --radius-lg: 14px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
   --radius-pill: 999px;
 
+  /* Theme: Health & Fitness - Slate & Vibrant Cyan */
   --c-bg: #ffffff;
-  --c-bg-2: #f0f4ff;
-  --c-bg-3: #e4ecff;
-  --c-text: #1a1a2e;
-  --c-text-2: #5a5a7a;
-  --c-text-3: #9b9bb0;
-  --c-border: rgba(99,102,241,0.15);
-  --c-border-2: rgba(99,102,241,0.30);
-  --c-accent: #6366f1;
-  --c-success-bg: #eaf3de;
-  --c-success: #3b6d11;
-  --c-danger: #e53e3e;
-  --c-star: #f59e0b;
+  --c-bg-2: #f8fafc;
+  --c-bg-3: #f1f5f9;
+  --c-text: #0f172a;
+  --c-text-2: #475569;
+  --c-text-3: #64748b;
+  --c-border: rgba(15, 23, 42, 0.08);
+  --c-border-2: rgba(14, 116, 144, 0.15);
+  --c-accent: #0e7490;
+  --c-accent-hover: #0891b2;
+  --c-accent-light: #ecfeff;
+  --c-success-bg: #f0fdf4;
+  --c-success: #15803d;
+  --c-danger-bg: #fef2f2;
+  --c-danger: #b91c1c;
+  --c-shadow: rgba(15, 23, 42, 0.05);
+  
+  --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --c-bg: #1a1a2e;
-    --c-bg-2: #16213e;
-    --c-bg-3: #0f3460;
-    --c-text: #f0f0ee;
-    --c-text-2: #a0a0c0;
-    --c-text-3: #6b6b90;
-    --c-border: rgba(99,102,241,0.20);
-    --c-border-2: rgba(99,102,241,0.35);
-    --c-accent: #818cf8;
-    --c-success-bg: #1a2e0d;
-    --c-success: #97c459;
-    --c-danger: #f09595;
+    --c-bg: #0f172a;
+    --c-bg-2: #020617;
+    --c-bg-3: #1e293b;
+    --c-text: #f8fafc;
+    --c-text-2: #94a3b8;
+    --c-text-3: #475569;
+    --c-border: rgba(255, 255, 255, 0.08);
+    --c-border-2: rgba(34, 211, 238, 0.2);
+    --c-accent: #22d3ee;
+    --c-accent-hover: #06b6d4;
+    --c-accent-light: #083344;
+    --c-success-bg: #064e3b;
+    --c-success: #4ade80;
+    --c-danger-bg: #7f1d1d;
+    --c-danger: #f87171;
+    --c-shadow: rgba(0, 0, 0, 0.3);
   }
 }
 
@@ -50,6 +64,8 @@ html, body {
   color: var(--c-text);
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.5;
 }
 
 input, textarea, select, button {
@@ -61,4 +77,21 @@ button {
   cursor: pointer;
   border: none;
   background: none;
+  transition: all var(--transition-fast);
+}
+
+/* Scrollbar customization */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--c-bg-2);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--c-border-2);
+  border-radius: var(--radius-pill);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--c-accent);
 }
